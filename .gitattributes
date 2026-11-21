@@ -1,0 +1,2 @@
+# Git hook은 쉘 스크립트라 Windows에서도 LF 줄바꿈을 유지
+.githooks/* text eol=lf
