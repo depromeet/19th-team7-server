@@ -1,0 +1,65 @@
+#!/bin/sh
+# 커밋 메시지 컨벤션 검사 (규칙: docs/conventions/commit.md)
+#   형식: {타입}: {제목}
+#   - 허용 타입: feat, fix, refactor, chore, docs, test, style
+#   - 제목과 본문 사이 빈 줄 1개, 본문은 "- "로 시작하는 bullet point
+#   - chore, docs, test, style 타입은 본문 작성 금지
+#   - Co-Authored-By 등 AI 도구 서명 줄 금지 (AGENTS.md)
+
+TYPES='feat|fix|refactor|chore|docs|test|style'
+NO_BODY_TYPES='chore|docs|test|style'
+
+# 주석(#) 줄과 줄 끝 공백을 제거한 메시지
+msg=$(grep -v '^#' "$1" | sed -e 's/[[:space:]]*$//')
+title=$(printf '%s\n' "$msg" | sed -n '1p')
+
+# git이 자동으로 만드는 메시지는 검사하지 않는다
+case "$title" in
+  "Merge "*|"Revert "*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+fail() {
+  echo "" >&2
+  echo "[commit-msg] 커밋 메시지 컨벤션 위반: $1" >&2
+  echo "  형식: {타입}: {제목}" >&2
+  echo "  허용 타입: feat, fix, refactor, chore, docs, test, style" >&2
+  echo "  규칙 문서: docs/conventions/commit.md" >&2
+  echo "" >&2
+  exit 1
+}
+
+# 1. 제목 형식: 타입과 콜론 사이 공백 없음, 콜론 뒤 공백 1개
+if ! printf '%s\n' "$title" | grep -Eq "^($TYPES): [^[:space:]]"; then
+  fail "제목이 '{타입}: {제목}' 형식이 아닙니다 -> \"$title\""
+fi
+
+# 2. Co-Authored-By, AI 도구 생성 표시 금지
+if printf '%s\n' "$msg" | grep -Eiq '^co-authored-by:|generated (with|by) .*(claude|codex|chatgpt|openai|cursor|copilot|gemini)|noreply@anthropic\.com'; then
+  fail "Co-Authored-By 또는 AI 도구 서명 줄은 넣을 수 없습니다"
+fi
+
+type=$(printf '%s\n' "$title" | sed -E 's/^([a-z]+):.*/\1/')
+second=$(printf '%s\n' "$msg" | sed -n '2p')
+body=$(printf '%s\n' "$msg" | sed -n '3,$p' | grep -v '^$')
+
+# 본문이 없으면 통과
+if [ -z "$second" ] && [ -z "$body" ]; then
+  exit 0
+fi
+
+# 3. chore, docs, test, style 타입은 본문 금지
+if printf '%s\n' "$type" | grep -Eq "^($NO_BODY_TYPES)$"; then
+  fail "$type 타입은 본문을 작성하지 않습니다"
+fi
+
+# 4. 제목과 본문 사이 빈 줄 1개
+if [ -n "$second" ]; then
+  fail "제목과 본문 사이에 빈 줄이 필요합니다"
+fi
+
+# 5. 본문은 "- "로 시작하는 bullet point
+if printf '%s\n' "$body" | grep -vq '^- '; then
+  fail "본문의 각 줄은 '- '로 시작해야 합니다"
+fi
+
+exit 0
