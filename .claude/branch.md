@@ -7,17 +7,17 @@
 
 ## 브랜치 이름 형식
 ```
-{타입}/{이슈번호}-{작업-요약}
+{작업단위}/{이슈번호}-{description}
 ```
 - 예: `feat/12-kakao-login`, `fix/23-feed-pagination`, `chore/1-server-setup`
 
 ## 규칙
-- 타입은 커밋 컨벤션(`.claude/commands/commit.md`)의 허용 타입과 같다
+- 작업단위는 커밋 컨벤션(`.claude/commands/commit.md`)의 허용 타입과 같다
   - `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`
-- 이슈 제목 머리말에 맞춰 타입을 정한다
+- 이슈 제목 머리말에 맞춰 작업단위를 정한다
   - `[FEAT]` → `feat`, `[FIX]` → `fix`, `[CHORE]` → `chore`, `[REFACTOR]` → `refactor` ...
 - 이슈 번호는 `#` 없이 숫자만 쓴다 (`#`은 셸에서 주석으로 해석될 수 있음)
-- 작업 요약은 이슈에 작성된 기능을 영어로 간결하게 작성한다
+- description은 이슈에 작성된 기능을 영어로 간결하게 작성한다
   - 소문자, 단어 사이는 `-` (kebab-case), 2~4단어
 - 이슈 하나당 브랜치 하나
 
@@ -26,12 +26,12 @@
 ```bash
 git checkout develop
 git pull origin develop
-git checkout -b {타입}/{이슈번호}-{작업-요약}
+git checkout -b {작업단위}/{이슈번호}-{description}
 ```
 
 ## Hotfix
 운영 긴급 수정은 main에서 만든다.
-- 이름: `hotfix/{이슈번호}-{작업-요약}`
+- 이름: `hotfix/{이슈번호}-{description}`
 - 수정 후 `main`과 `develop` 둘 다에 머지한다
 
 ## 머지 후 정리
