@@ -12,7 +12,7 @@
 - 예: `feat/12-kakao-login`, `fix/23-feed-pagination`, `chore/1-server-setup`
 
 ## 규칙
-- 작업단위는 커밋 컨벤션(`.claude/commands/commit.md`)의 허용 타입과 같다
+- 작업단위는 커밋 컨벤션(`docs/conventions/commit.md`)의 허용 타입과 같다
   - `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`
 - 이슈 제목 머리말에 맞춰 작업단위를 정한다
   - `[FEAT]` → `feat`, `[FIX]` → `fix`, `[CHORE]` → `chore`, `[REFACTOR]` → `refactor` ...

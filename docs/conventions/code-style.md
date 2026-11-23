@@ -19,7 +19,7 @@
 - 축약어를 피하고 의미가 드러나는 이름을 쓴다
 
 ## 패키지 구조
-- 도메인 기반 구조를 따른다 → `.claude/project-structure.md`
+- 도메인 기반 구조를 따른다 → `docs/conventions/project-structure.md`
 - 다른 도메인의 내부 구현(repository, entity)에 직접 접근하지 않는다
 
 ## 가독성
